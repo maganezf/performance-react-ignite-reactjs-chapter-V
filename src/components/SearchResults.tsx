@@ -9,9 +9,13 @@ type Product = {
 
 interface SearchResultsProps {
   results: Product[];
+  onAddToWhishList: (id: number) => void;
 }
 
-export function SearchResults({ results }: SearchResultsProps) {
+export function SearchResults({
+  results,
+  onAddToWhishList,
+}: SearchResultsProps) {
   const totalPrice = useMemo(() => {
     return results.reduce((totalAcc, product) => {
       return totalAcc + product.price;
@@ -23,7 +27,11 @@ export function SearchResults({ results }: SearchResultsProps) {
       <h2 style={{ marginBottom: 25 }}>Total price: ${totalPrice}</h2>
 
       {results.map(product => (
-        <ProductItem key={product.id} product={product} />
+        <ProductItem
+          key={product.id}
+          product={product}
+          onAddToWhishList={onAddToWhishList}
+        />
       ))}
     </div>
   );

@@ -1,5 +1,5 @@
 import { SearchResults } from 'components/SearchResults';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useCallback, useState } from 'react';
 
 type Product = {
   id: number;
@@ -24,6 +24,10 @@ export default function Home() {
     setResults(data);
   }
 
+  const addToWhishList = useCallback(async (id: number) => {
+    console.log('addToWhishList product with this id: ', id);
+  }, []);
+
   return (
     <div className='container'>
       <h1>Search</h1>
@@ -36,7 +40,17 @@ export default function Home() {
         />
       </form>
 
-      <SearchResults results={results} />
+      <SearchResults results={results} onAddToWhishList={addToWhishList} />
     </div>
   );
 }
+
+/**
+ * useCallback
+
+  --> permite que uma função não ocupe um novo espaço na memória/seja recriada,
+  toda vez em que o componente dela for renderizado
+
+  array de dependências: dependência que esteja dentro do componente, para recriar a função na memória
+
+ */
