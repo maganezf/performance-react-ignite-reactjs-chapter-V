@@ -1,27 +1,23 @@
-import { useMemo } from 'react';
 import { ProductItem } from './ProductItem';
 
 type Product = {
   id: number;
   price: number;
+  priceFormatted: string;
   title: string;
 };
 
 interface SearchResultsProps {
   results: Product[];
+  totalPrice: number;
   onAddToWhishList: (id: number) => void;
 }
 
 export function SearchResults({
   results,
+  totalPrice,
   onAddToWhishList,
 }: SearchResultsProps) {
-  const totalPrice = useMemo(() => {
-    return results.reduce((totalAcc, product) => {
-      return totalAcc + product.price;
-    }, 0);
-  }, [results]);
-
   return (
     <div>
       <h2 style={{ marginBottom: 25 }}>Total price: ${totalPrice}</h2>

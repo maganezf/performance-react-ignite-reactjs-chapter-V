@@ -4,12 +4,21 @@ import { FormEvent, useCallback, useState } from 'react';
 type Product = {
   id: number;
   price: number;
+  priceFormatted: string;
   title: string;
+};
+
+type Results = {
+  data: Product[];
+  totalPrice: number;
 };
 
 export default function Home() {
   const [search, setSearch] = useState('');
-  const [results, setResults] = useState<Product[]>([]);
+  const [results, setResults] = useState<Results>({
+    data: [],
+    totalPrice: 0,
+  });
 
   async function handleSearch(event: FormEvent) {
     event.preventDefault();
@@ -19,9 +28,27 @@ export default function Home() {
     }
 
     const response = await fetch(`http://localhost:3333/products?q=${search}`);
-    const data = await response.json();
+    const data: Product[] = await response.json();
 
-    setResults(data);
+    const formatter = new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    });
+
+    const products = data.map(product => {
+      return {
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        priceFormatted: formatter.format(product.price),
+      };
+    });
+
+    const totalPrice = data.reduce((totalAcc, product) => {
+      return totalAcc + product.price;
+    }, 0);
+
+    setResults({ totalPrice, data: products });
   }
 
   const addToWhishList = useCallback(async (id: number) => {
@@ -40,7 +67,11 @@ export default function Home() {
         />
       </form>
 
-      <SearchResults results={results} onAddToWhishList={addToWhishList} />
+      <SearchResults
+        results={results.data}
+        totalPrice={results.totalPrice}
+        onAddToWhishList={addToWhishList}
+      />
     </div>
   );
 }
