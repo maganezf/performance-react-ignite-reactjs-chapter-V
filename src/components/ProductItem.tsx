@@ -42,4 +42,5 @@ export const ProductItem = memo(
   * 3. Re-renders with same props
 
   * 4. Medium to big size components
+
  */
